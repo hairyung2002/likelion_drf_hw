@@ -17,7 +17,7 @@ def singer_list_create(request):
         serializer = SingerSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             singer = serializer.save()
-            content = request.data.get('content')
+            content = request.data['content']
             tags = [words[1:] for words in content.split() if words.startswith('#')]
             for t in tags:
                 try:
@@ -52,12 +52,12 @@ def singer_detail_update_delete(request, singer_id):
         return Response(serializer.data)
     
     elif request.method == 'PATCH':
-        serializer = SingerSerializer(instance=singer, data=request.data)
+        serializer = SingerSerializer(instance=singer, data=request.data, partial=True)
         if serializer.is_valid():
             singer = serializer.save()
             singer.tags.clear()
-            content = request.data.get('content')
-            tags = [words[1:] for words in content.split() if words.startswith('#')]
+            content = request.data.get("content")
+            tags = [words[1:] for words in content.split(' ') if words.startswith('#')]
             for t in tags:
                 try:
                     tag = get_object_or_404(Tag, name=t)
@@ -66,7 +66,7 @@ def singer_detail_update_delete(request, singer_id):
                     tag.save()
                 singer.tags.add(tag)
             singer.save()
-        return Response(serializer.data)
+        return Response(data=SingerSerializer(singer).data)
         
     elif request.method == 'DELETE':
         singer.delete()
@@ -87,7 +87,7 @@ def song_detail_update_delete(request, song_id):
         serializer = SongSerializer(instance=song, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(data=SingerSerializer(Singer).data)
         
     elif request.method == 'DELETE':
         song.delete()

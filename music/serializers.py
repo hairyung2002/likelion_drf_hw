@@ -12,6 +12,8 @@ class SingerSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(read_only=True)
 
     songs = serializers.SerializerMethodField(read_only=True)
+    image = serializers.ImageField(use_url=True, required=False)
+
 
     def get_songs(self, instance):
         serializers = SongSerializer(instance.songs, many=True)
@@ -21,12 +23,10 @@ class SingerSerializer(serializers.ModelSerializer):
     def get_tags(self, instance):
         tag = instance.tags.all()
         return [t.name for t in tag]
-    
+
     class Meta:
         model = Singer
         fields = '__all__'
-
-    image = serializers.ImageField(use_url=True, required=False)
 
 class SongSerializer(serializers.ModelSerializer):
     class Meta:

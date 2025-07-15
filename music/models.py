@@ -22,7 +22,7 @@ class Singer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    tags = models.ManyToManyField(Tag, blank=True, related_name='singers')
+    tags = models.ManyToManyField(Tag, blank=True)
     image = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
 
     def __str__(self):
